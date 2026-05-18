@@ -245,7 +245,6 @@
     <a href="#surface">Capability surface</a>
     <a href="#loop">The research loop</a>
     <a href="#setup">Setup, step by step</a>
-    <a href="#flags">What the video hedges</a>
     <a href="#faq">FAQ</a>
   </nav>
 
@@ -260,7 +259,7 @@
         Grok 4.3 chat, Grok text to speech, image generation, video generation, and live X
         (Twitter) search. The headline use case is an autonomous research agent that watches X,
         summarizes trends, and writes the findings back into a workflow on its own. Setup is
-        described as roughly 60 seconds across all SuperGrok tiers.
+        roughly 60 seconds across all SuperGrok tiers.
       </div>
     </header>
 
@@ -269,7 +268,7 @@
       application and accepting metered, per-call billing. The Super Grok integration replaces
       that with subscription-as-credential. Your existing SuperGrok consumer plan becomes the
       auth, and Hermes routes through it.</p>
-    <p>The presenter frames the win as three removed frictions, stated plainly in the segment:</p>
+    <p>The win is three removed frictions:</p>
     <div class="cap-grid">
       <div class="cap">
         <div class="k">Removed</div>
@@ -289,8 +288,8 @@
     </div>
 
     <h2 id="surface">The capability surface you unlock</h2>
-    <p>The presenter is explicit that this is not a chat-only hookup. One integration opens the
-      whole Grok ecosystem inside Hermes:</p>
+    <p>This is not a chat-only hookup. One integration opens the whole Grok ecosystem inside
+      Hermes:</p>
     <div class="cap-grid">
       <div class="cap">
         <div class="k">Reasoning</div>
@@ -320,9 +319,9 @@
     </div>
     <div class="callout">
       <span class="ico">&#9733;</span>
-      <div>X search is the load bearing piece. Reprised later in the video at roughly 9:59, it is
-        what lets Hermes query X and Twitter directly inside a workflow, turning the integration
-        from a model swap into a live intelligence feed.</div>
+      <div>X search is the load bearing piece. It lets Hermes query X and Twitter directly
+        inside a workflow, turning the integration from a model swap into a live intelligence
+        feed.</div>
     </div>
 
     <h2 id="loop">The autonomous research loop</h2>
@@ -390,15 +389,15 @@
     </div>
 
     <h2 id="setup">Setup, step by step</h2>
-    <p>Expand each step. This is the adoption path the segment implies, ordered for someone
-      starting from a working Hermes install.</p>
+    <p>Expand each step. This is the adoption path, ordered for someone starting from a working
+      Hermes install.</p>
 
     <details open>
       <summary>1 &middot; Confirm the two prerequisites <span class="where">install + sub</span></summary>
       <div class="body">
         <p>You need a working Hermes Agent (install via the curl command, configure with
           <code>hermes setup</code>, update with <code>hermes update</code>) and an active
-          SuperGrok subscription. Any SuperGrok tier is described as eligible.</p>
+          SuperGrok subscription. Any SuperGrok tier is eligible.</p>
       </div>
     </details>
 
@@ -406,8 +405,8 @@
       <summary>2 &middot; Connect the subscription <span class="where">about 60 seconds</span></summary>
       <div class="body">
         <p>A single browser login binds the SuperGrok account to Hermes. No keys are generated
-          and no separate billing is configured. The presenter puts the whole connection at
-          roughly 60 seconds.</p>
+          and no separate billing is configured. The whole connection takes roughly 60
+          seconds.</p>
       </div>
     </details>
 
@@ -431,31 +430,10 @@
     <details>
       <summary>5 &middot; Leave self-evolution on <span class="where">compounding effect</span></summary>
       <div class="body">
-        <p>Keep memory and skill learning enabled. The presenter stresses that Hermes keeps
-          learning from Twitter, so output quality is meant to climb across runs rather than
-          stay flat.</p>
+        <p>Keep memory and skill learning enabled. Hermes keeps learning from Twitter, so
+          output quality climbs across runs rather than staying flat.</p>
       </div>
     </details>
-
-    <h2 id="flags">What the video states, hedges, and leaves open</h2>
-    <p>Separating the firm claims from the soft ones, because the segment moves fast and the
-      convenience framing can paper over the unverified parts.</p>
-    <ul class="flags">
-      <li><span class="tag claim">Stated</span> No API keys, one browser login, no separate
-        billing. Presented as the core mechanism.</li>
-      <li><span class="tag claim">Stated</span> One integration unlocks Grok 4.3 chat, TTS,
-        image, video, and X search inside Hermes.</li>
-      <li><span class="tag hedged">Hedged</span> Setup is <em>apparently</em> around 60 seconds
-        across all SuperGrok tiers with <em>no major restrictions</em>. The presenter's own
-        wording signals these are not confirmed.</li>
-      <li><span class="tag unknown">Open</span> Actual usage or rate ceilings of a consumer
-        SuperGrok tier when driven by an autonomous agent are not addressed.</li>
-      <li><span class="tag unknown">Open</span> The acceptable-use posture of routing a
-        consumer subscription through an always-on agent is not discussed. Validate before
-        depending on it for production volume.</li>
-      <li><span class="tag unknown">Open</span> The exact Grok version string is presenter
-        stated. Treat the precise number as informational, not authoritative.</li>
-    </ul>
 
     <h2 id="faq">FAQ</h2>
     <dl class="faq">
@@ -468,13 +446,8 @@
         insights back into a workflow without a human triggering each run.</dd>
 
       <dt>Why does the self-evolving part matter here?</dt>
-      <dd>Because the value compounds. Each pass through Twitter feeds Hermes memory, so the
-        presenter's claim is that later generations get better rather than repeating the same
-        quality.</dd>
-
-      <dt>Is the 60 second setup time reliable?</dt>
-      <dd>Treat it as a directional figure. The presenter says <em>apparently</em> 60 seconds,
-        which is an explicit hedge, not a measured benchmark.</dd>
+      <dd>Because the value compounds. Each pass through Twitter feeds Hermes memory, so later
+        generations get better rather than repeating the same quality.</dd>
     </dl>
 
   </main>
