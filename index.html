@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Super Grok integration in Hermes Agent</title>
+<style>
+  :root {
+    --ivory:   #FAF9F5;
+    --slate:   #141413;
+    --clay:    #D97757;
+    --oat:     #E3DACC;
+    --olive:   #788C5D;
+    --gray-150:#F0EEE6;
+    --gray-300:#D1CFC5;
+    --gray-500:#87867F;
+    --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ivory);
+    color: var(--gray-700);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 24px 120px;
+  }
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 48px;
+  }
+  @media (max-width: 920px) { .page { grid-template-columns: 1fr; } nav { display: none; } }
+
+  nav {
+    position: sticky;
+    top: 32px;
+    align-self: start;
+    font-size: 13px;
+  }
+  nav .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 12px;
+  }
+  nav a {
+    display: block;
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid var(--gray-300);
+    color: var(--gray-700);
+    text-decoration: none;
+  }
+  nav a:hover { color: var(--slate); border-color: var(--slate); }
+  nav a.l2 { padding-left: 24px; font-size: 12.5px; color: var(--gray-500); }
+  nav .files {
+    margin-top: 28px;
+    border-top: 1px solid var(--gray-300);
+    padding-top: 16px;
+  }
+  nav .files code {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    padding: 3px 0;
+  }
+
+  header { margin-bottom: 12px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 32px;
+    color: var(--slate);
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+  .tldr {
+    border: 1.5px solid var(--gray-300);
+    border-left: 3px solid var(--clay);
+    border-radius: 10px;
+    background: #fff;
+    padding: 16px 18px;
+    margin-bottom: 8px;
+  }
+  .tldr b { color: var(--slate); }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--slate);
+    margin: 44px 0 14px;
+    scroll-margin-top: 24px;
+  }
+  p { margin-bottom: 12px; max-width: 700px; }
+  code { font-family: var(--mono); font-size: 13px; }
+  em { color: var(--gray-700); font-style: italic; }
+
+  /* capability grid */
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin: 16px 0 8px;
+    max-width: 720px;
+  }
+  .cap {
+    border: 1.5px solid var(--gray-300);
+    border-radius: 10px;
+    background: #fff;
+    padding: 14px 15px;
+  }
+  .cap .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 6px;
+  }
+  .cap .t { font-family: var(--serif); font-size: 16px; color: var(--slate); margin-bottom: 4px; }
+  .cap .d { font-size: 13px; color: var(--gray-500); }
+
+  /* diagram */
+  .diagram {
+    border: 1.5px solid var(--gray-300);
+    border-radius: 10px;
+    background: #fff;
+    padding: 22px 18px 14px;
+    margin: 16px 0 8px;
+    overflow-x: auto;
+  }
+  .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .cap-note { font-size: 12.5px; color: var(--gray-500); text-align: center; margin-top: 10px; }
+
+  details {
+    border: 1.5px solid var(--gray-300);
+    border-radius: 10px;
+    background: #fff;
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--slate);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before {
+    content: "\25B8";
+    color: var(--clay);
+    font-family: var(--sans);
+    font-size: 12px;
+    transition: transform 120ms;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  summary .where {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-left: auto;
+  }
+  details .body { padding: 0 16px 16px; }
+  details .body p { font-size: 14px; }
+
+  .callout {
+    display: flex;
+    gap: 12px;
+    border: 1.5px solid var(--oat);
+    background: rgba(227,218,204,0.35);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 18px 0;
+    font-size: 14px;
+    max-width: 720px;
+  }
+  .callout .ico { color: var(--clay); font-weight: 600; }
+
+  .flags { max-width: 720px; padding-left: 20px; }
+  .flags li { margin-bottom: 9px; }
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 1px 7px;
+    border-radius: 5px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  .tag.claim   { background: rgba(120,140,93,0.18);  color: var(--olive); }
+  .tag.hedged  { background: rgba(217,119,87,0.16);  color: var(--clay); }
+  .tag.unknown { background: var(--gray-150);        color: var(--gray-500); }
+
+  dl.faq { margin-top: 8px; }
+  dl.faq dt {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--slate);
+    margin-top: 18px;
+  }
+  dl.faq dd { font-size: 14px; margin: 4px 0 0; max-width: 660px; }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-300);
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  footer a { color: var(--gray-500); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav>
+    <div class="label">On this page</div>
+    <a href="#tldr">TL;DR</a>
+    <a href="#change">What changed</a>
+    <a href="#surface">Capability surface</a>
+    <a href="#loop">The research loop</a>
+    <a href="#setup">Setup, step by step</a>
+    <a href="#flags">What the video hedges</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+
+  <main>
+    <header>
+      <div class="eyebrow">Research &amp; Learning &middot; feature summary</div>
+      <h1>The Super Grok integration in <code>Hermes Agent 0.14.0</code></h1>
+      <div class="tldr" id="tldr">
+        <b>TL;DR.</b> Hermes Agent can now authenticate against a consumer
+        <em>SuperGrok</em> subscription directly. One browser login, no API keys, no separate
+        billing system. That single connection exposes the full Grok surface inside the agent:
+        Grok 4.3 chat, Grok text to speech, image generation, video generation, and live X
+        (Twitter) search. The headline use case is an autonomous research agent that watches X,
+        summarizes trends, and writes the findings back into a workflow on its own. Setup is
+        described as roughly 60 seconds across all SuperGrok tiers.
+      </div>
+    </header>
+
+    <h2 id="change">What actually changed</h2>
+    <p>Before this release, wiring a model into an agent meant generating API keys per
+      application and accepting metered, per-call billing. The Super Grok integration replaces
+      that with subscription-as-credential. Your existing SuperGrok consumer plan becomes the
+      auth, and Hermes routes through it.</p>
+    <p>The presenter frames the win as three removed frictions, stated plainly in the segment:</p>
+    <div class="cap-grid">
+      <div class="cap">
+        <div class="k">Removed</div>
+        <div class="t">No API keys</div>
+        <div class="d">Nothing to generate, rotate, or scope per app.</div>
+      </div>
+      <div class="cap">
+        <div class="k">Removed</div>
+        <div class="t">One browser login</div>
+        <div class="d">Authentication happens through the account you already have.</div>
+      </div>
+      <div class="cap">
+        <div class="k">Removed</div>
+        <div class="t">No separate billing</div>
+        <div class="d">The subscription you pay for is the billing relationship.</div>
+      </div>
+    </div>
+
+    <h2 id="surface">The capability surface you unlock</h2>
+    <p>The presenter is explicit that this is not a chat-only hookup. One integration opens the
+      whole Grok ecosystem inside Hermes:</p>
+    <div class="cap-grid">
+      <div class="cap">
+        <div class="k">Reasoning</div>
+        <div class="t">Grok 4.3 text chat</div>
+        <div class="d">The conversational and reasoning core for the agent.</div>
+      </div>
+      <div class="cap">
+        <div class="k">Audio</div>
+        <div class="t">Grok text to speech</div>
+        <div class="d">Spoken output generated inside the same session.</div>
+      </div>
+      <div class="cap">
+        <div class="k">Visual</div>
+        <div class="t">Image generation</div>
+        <div class="d">Imagine style image output from the agent.</div>
+      </div>
+      <div class="cap">
+        <div class="k">Visual</div>
+        <div class="t">Video generation</div>
+        <div class="d">Video produced as part of an autonomous pipeline.</div>
+      </div>
+      <div class="cap">
+        <div class="k">Live data</div>
+        <div class="t">X search</div>
+        <div class="d">Real time X (Twitter) research as a workflow data source.</div>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="ico">&#9733;</span>
+      <div>X search is the load bearing piece. Reprised later in the video at roughly 9:59, it is
+        what lets Hermes query X and Twitter directly inside a workflow, turning the integration
+        from a model swap into a live intelligence feed.</div>
+    </div>
+
+    <h2 id="loop">The autonomous research loop</h2>
+    <p>The capability list only matters because of what it enables: a specialized research agent
+      that runs the loop below without a human in it. The self-evolving property of Hermes is
+      the part that compounds. Each pass through Twitter feeds memory, so later generations
+      improve.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 880 330" role="img" aria-label="Autonomous X research loop powered by the Super Grok integration">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#D97757"></path>
+          </marker>
+          <style>
+            .nbox{fill:#fff;stroke:#D1CFC5;stroke-width:1.5;}
+            .nacc{fill:#fff;stroke:#D97757;stroke-width:1.5;}
+            .nt{font-family:ui-serif,Georgia,serif;font-size:14px;fill:#141413;}
+            .ns{font-family:ui-monospace,Menlo,monospace;font-size:10px;fill:#87867F;letter-spacing:.06em;}
+            .ed{stroke:#D97757;stroke-width:1.6;fill:none;}
+            .el{font-family:ui-monospace,Menlo,monospace;font-size:10px;fill:#87867F;}
+          </style>
+        </defs>
+
+        <rect class="nacc" x="20"  y="44" width="150" height="60" rx="10"></rect>
+        <text class="ns" x="34" y="68">CREDENTIAL</text>
+        <text class="nt" x="34" y="90">SuperGrok sub</text>
+
+        <rect class="nbox" x="230" y="44" width="150" height="60" rx="10"></rect>
+        <text class="ns" x="244" y="68">AGENT</text>
+        <text class="nt" x="244" y="90">Hermes Agent</text>
+
+        <rect class="nbox" x="440" y="44" width="170" height="60" rx="10"></rect>
+        <text class="ns" x="454" y="68">LIVE DATA</text>
+        <text class="nt" x="454" y="90">X / Twitter search</text>
+
+        <rect class="nbox" x="670" y="44" width="170" height="60" rx="10"></rect>
+        <text class="ns" x="684" y="68">PROCESS</text>
+        <text class="nt" x="684" y="90">Summarize trends</text>
+
+        <rect class="nbox" x="440" y="210" width="170" height="60" rx="10"></rect>
+        <text class="ns" x="454" y="234">EVOLVE</text>
+        <text class="nt" x="454" y="256">Memory</text>
+
+        <rect class="nbox" x="670" y="210" width="170" height="60" rx="10"></rect>
+        <text class="ns" x="684" y="234">OUTPUT</text>
+        <text class="nt" x="684" y="256">Write to workflow</text>
+
+        <path class="ed" d="M170,74 L224,74" marker-end="url(#ah)"></path>
+        <text class="el" x="182" y="66">auth</text>
+
+        <path class="ed" d="M380,74 L434,74" marker-end="url(#ah)"></path>
+        <path class="ed" d="M610,74 L664,74" marker-end="url(#ah)"></path>
+
+        <path class="ed" d="M755,104 L755,204" marker-end="url(#ah)"></path>
+        <text class="el" x="698" y="160">findings</text>
+
+        <path class="ed" d="M700,104 C700,162 525,148 525,204" marker-end="url(#ah)"></path>
+        <text class="el" x="600" y="138">store</text>
+
+        <path class="ed" d="M440,240 C262,252 132,256 120,200 C110,150 232,120 300,108" marker-end="url(#ah)"></path>
+        <text class="el" x="150" y="308">feeds memory, next pass improves</text>
+      </svg>
+      <div class="cap-note">SuperGrok authenticates Hermes. Hermes searches X, summarizes,
+        writes back, and folds the result into memory so the loop sharpens over time.</div>
+    </div>
+
+    <h2 id="setup">Setup, step by step</h2>
+    <p>Expand each step. This is the adoption path the segment implies, ordered for someone
+      starting from a working Hermes install.</p>
+
+    <details open>
+      <summary>1 &middot; Confirm the two prerequisites <span class="where">install + sub</span></summary>
+      <div class="body">
+        <p>You need a working Hermes Agent (install via the curl command, configure with
+          <code>hermes setup</code>, update with <code>hermes update</code>) and an active
+          SuperGrok subscription. Any SuperGrok tier is described as eligible.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>2 &middot; Connect the subscription <span class="where">about 60 seconds</span></summary>
+      <div class="body">
+        <p>A single browser login binds the SuperGrok account to Hermes. No keys are generated
+          and no separate billing is configured. The presenter puts the whole connection at
+          roughly 60 seconds.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>3 &middot; Verify the capability surface <span class="where">5 modalities</span></summary>
+      <div class="body">
+        <p>Confirm the agent can reach Grok 4.3 chat, Grok text to speech, image generation,
+          video generation, and X search from inside Hermes before you build on top of it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>4 &middot; Build the research agent <span class="where">monitor, summarize, write back</span></summary>
+      <div class="body">
+        <p>Point the agent at the X topics or accounts you care about. Set the loop to gather,
+          summarize trends, and write insights back into the workflow. Schedule it so it runs
+          autonomously rather than on demand.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>5 &middot; Leave self-evolution on <span class="where">compounding effect</span></summary>
+      <div class="body">
+        <p>Keep memory and skill learning enabled. The presenter stresses that Hermes keeps
+          learning from Twitter, so output quality is meant to climb across runs rather than
+          stay flat.</p>
+      </div>
+    </details>
+
+    <h2 id="flags">What the video states, hedges, and leaves open</h2>
+    <p>Separating the firm claims from the soft ones, because the segment moves fast and the
+      convenience framing can paper over the unverified parts.</p>
+    <ul class="flags">
+      <li><span class="tag claim">Stated</span> No API keys, one browser login, no separate
+        billing. Presented as the core mechanism.</li>
+      <li><span class="tag claim">Stated</span> One integration unlocks Grok 4.3 chat, TTS,
+        image, video, and X search inside Hermes.</li>
+      <li><span class="tag hedged">Hedged</span> Setup is <em>apparently</em> around 60 seconds
+        across all SuperGrok tiers with <em>no major restrictions</em>. The presenter's own
+        wording signals these are not confirmed.</li>
+      <li><span class="tag unknown">Open</span> Actual usage or rate ceilings of a consumer
+        SuperGrok tier when driven by an autonomous agent are not addressed.</li>
+      <li><span class="tag unknown">Open</span> The acceptable-use posture of routing a
+        consumer subscription through an always-on agent is not discussed. Validate before
+        depending on it for production volume.</li>
+      <li><span class="tag unknown">Open</span> The exact Grok version string is presenter
+        stated. Treat the precise number as informational, not authoritative.</li>
+    </ul>
+
+    <h2 id="faq">FAQ</h2>
+    <dl class="faq">
+      <dt>Do I still need a Grok API key for this?</dt>
+      <dd>No. That is the entire point of the integration. The SuperGrok subscription is the
+        credential, and one browser login replaces key management.</dd>
+
+      <dt>What is the single most useful thing it enables?</dt>
+      <dd>An autonomous X research agent: it monitors X, summarizes trends, and feeds the
+        insights back into a workflow without a human triggering each run.</dd>
+
+      <dt>Why does the self-evolving part matter here?</dt>
+      <dd>Because the value compounds. Each pass through Twitter feeds Hermes memory, so the
+        presenter's claim is that later generations get better rather than repeating the same
+        quality.</dd>
+
+      <dt>Is the 60 second setup time reliable?</dt>
+      <dd>Treat it as a directional figure. The presenter says <em>apparently</em> 60 seconds,
+        which is an explicit hedge, not a measured benchmark.</dd>
+    </dl>
+
+  </main>
+
+</div>
+</body>
+</html>
